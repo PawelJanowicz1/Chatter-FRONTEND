@@ -1,0 +1,50 @@
+<section class="create-card" (click)="$event.stopPropagation()">
+
+  <h2>Create new room</h2>
+
+  <div class="form">
+
+    <div class="field">
+      <label>Room name</label>
+      <input
+        type="text"
+        [(ngModel)]="name"
+        autofocus
+      />
+    </div>
+
+    <div class="field">
+      <label>Room capacity</label>
+      <div class="capacity-row">
+        <input
+          type="range"
+          min="2"
+          max="50"
+          step="1"
+          [(ngModel)]="maxCapacity"
+        />
+        <span class="capacity-value">{{ maxCapacity }}</span>
+      </div>
+    </div>
+
+    <label class="checkbox">
+      <input type="checkbox" [(ngModel)]="isPrivate" />
+      <span class="checkmark"></span>
+      Private room
+    </label>
+
+  </div>
+
+  <div class="actions">
+    <button class="ghost" (click)="cancel.emit()">Cancel</button>
+    <button
+      class="create-btn"
+      [class.ready]="name.trim().length > 0"
+      (click)="create()"
+      [disabled]="loading || !name.trim()"
+    >
+      {{ loading ? 'Creating…' : 'Create' }}
+    </button>
+  </div>
+
+</section>

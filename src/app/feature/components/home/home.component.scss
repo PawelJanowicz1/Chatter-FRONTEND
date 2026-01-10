@@ -112,3 +112,19 @@
 .empty {
   color: var(--text-muted);
 }
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 12, 25, 0.65);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 101;
+}

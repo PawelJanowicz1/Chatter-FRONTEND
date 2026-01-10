@@ -16,6 +16,6 @@ export class RoomService {
   }
 
   getPublicRooms(): Observable<RoomResponse[]> {
-    return this.httpClient.get<RoomResponse[]>(`${this.apiBaseUrl}/public`);
+    return this.httpClient.get<RoomResponse[]>(`${this.apiBaseUrl}/rooms`);
   }
 }

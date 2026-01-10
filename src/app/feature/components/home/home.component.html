@@ -4,8 +4,7 @@
     <h1>💬 Chatter</h1>
 
     <div class="top-actions">
-      <button class="secondary" routerLink="/rooms">+ Create private room</button>
-      <button class="primary" disabled>🔒 Join private room</button>
+      <button class="secondary" (click)="openCreateRoom()">+ Create room</button>
     </div>
   </header>
 
@@ -18,7 +17,10 @@
 
       <ul *ngIf="rooms.length; else empty">
         <li *ngFor="let room of rooms">
-          <span>{{ room.name }}</span>
+    <span class="room-name">
+      {{ room.name }}
+      <span *ngIf="room.isPrivate" class="lock" title="Private room">🔒</span>
+    </span>
           <button (click)="joinRoom(room)">Join</button>
         </li>
       </ul>
@@ -29,4 +31,13 @@
     </section>
 
   </main>
+</section>
+
+<div class="modal-backdrop" *ngIf="showCreateModal" (click)="closeCreateRoom()"></div>
+
+<section class="modal" *ngIf="showCreateModal">
+  <app-room-create
+    (created)="onRoomCreated()"
+    (cancel)="closeCreateRoom()">
+  </app-room-create>
 </section>
