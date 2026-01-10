@@ -1,0 +1,32 @@
+<section class="page">
+
+  <header class="top-bar">
+    <h1>💬 Chatter</h1>
+
+    <div class="top-actions">
+      <button class="secondary" routerLink="/rooms">+ Create private room</button>
+      <button class="primary" disabled>🔒 Join private room</button>
+    </div>
+  </header>
+
+  <main class="content">
+
+    <app-chat class="chat-card"></app-chat>
+
+    <section class="rooms-card">
+      <h2>Available rooms</h2>
+
+      <ul *ngIf="rooms.length; else empty">
+        <li *ngFor="let room of rooms">
+          <span>{{ room.name }}</span>
+          <button (click)="joinRoom(room)">Join</button>
+        </li>
+      </ul>
+
+      <ng-template #empty>
+        <p class="empty">No rooms available</p>
+      </ng-template>
+    </section>
+
+  </main>
+</section>

@@ -1,0 +1,23 @@
+<section class="rooms-wrap">
+
+  <h2>Tworzenie pokoju</h2>
+
+  <div class="create-form">
+    <input [(ngModel)]="name" placeholder="Nazwa pokoju">
+    <input type="number" [(ngModel)]="maxCapacity" placeholder="Max liczba osób">
+    <label>
+      <input type="checkbox" [(ngModel)]="isPrivate"> Prywatny
+    </label>
+
+    <button (click)="createRoom()">Stwórz</button>
+  </div>
+
+  <h2>Publiczne pokoje</h2>
+
+  <ul>
+    <li *ngFor="let room of rooms">
+      {{ room.name }} (ID: {{ room.id }})
+      <button (click)="joinRoom(room)">Dołącz</button>
+    </li>
+  </ul>
+</section>

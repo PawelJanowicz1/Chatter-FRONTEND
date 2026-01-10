@@ -2,8 +2,8 @@ import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import {ChatMessage} from '../../core/interface/backend-models/chat/chat-message.interface';
-import {ChatService} from '../../apis/chat/chat.service';
+import {ChatMessage} from '../../../core/interface/backend-models/chat/chat-message.interface';
+import {ChatService} from '../../../apis/chat/chat.service';
 
 @Component({
   selector: 'app-chat',

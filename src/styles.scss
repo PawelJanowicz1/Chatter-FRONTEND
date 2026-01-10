@@ -1,1 +1,24 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg-main: #0f1220;
+  --bg-card: #181b2e;
+  --bg-soft: #1f2340;
+  --border-soft: #2a2f55;
+
+  --text-main: #e6e8ff;
+  --text-muted: #9aa0ff;
+
+  --accent-purple: #7c6cff;
+  --accent-teal: #2dd4bf;
+  --accent-green: #4ade80;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #0f1222;
+}
+
+body {
+  overflow: hidden;
+}
