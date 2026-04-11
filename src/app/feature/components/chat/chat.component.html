@@ -2,9 +2,10 @@
 
   <header class="chat-header">
     <div>💬 <strong>Chatter</strong> — public room</div>
-    <div class="nick">
+    <div class="nick" *ngIf="nick()">
       Nick: <b>{{ nick() }}</b>
       <span class="dot" [class.on]="connected()"></span>
+      <button class="change-nick-btn" (click)="changeNick()">Change</button>
     </div>
   </header>
 
@@ -29,14 +30,58 @@
   <footer class="chat-input">
     <input [(ngModel)]="text"
            (keydown.enter)="send()"
-           placeholder="Type your message…" />
+           placeholder="Type your message…"
+           [disabled]="showNickModal()" />
 
     <button (click)="send()"
-            [disabled]="!connected() || !text?.trim()">
+            [disabled]="showNickModal() || !connected() || !text?.trim()">
       <svg viewBox="0 0 24 24" width="22" height="22">
         <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"></path>
       </svg>
     </button>
   </footer>
 
+</section>
+
+<div class="nick-modal-backdrop" *ngIf="showNickModal()"></div>
+
+<section class="nick-modal" *ngIf="showNickModal()">
+  <div class="nick-card">
+    <button
+      *ngIf="allowCloseNickModal()"
+      class="close-nick-modal-btn"
+      (click)="closeNickModal()"
+      type="button"
+    >
+      ×
+    </button>
+
+    <h2>Set your nickname</h2>
+    <p class="nick-subtitle">Choose a name to enter the public chat room.</p>
+
+    <div class="nick-form">
+      <div class="field">
+        <label>Nickname</label>
+        <input
+          type="text"
+          [(ngModel)]="nickInput"
+          maxlength="20"
+          placeholder="Enter nickname"
+          (keydown.enter)="saveNick()"
+          autofocus
+        />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button
+        class="save-btn"
+        [class.ready]="nickInput.trim().length >= 3"
+        (click)="saveNick()"
+        [disabled]="nickInput.trim().length < 3"
+      >
+        Join chat
+      </button>
+    </div>
+  </div>
 </section>
