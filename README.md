@@ -11,22 +11,22 @@ This repository contains the **frontend section** of the project.
 * SockJS
 
 ## :camera: Screenshots
-Home page      |  Nickname modal
-:------------------------:|:-------------------------:
-![Nickname modal](public/images/screenshots/home.png)  |  ![Home page](public/images/screenshots/nickname-modal.png)
+Public chat
+:-------------------------:
+![Public chat](public/images/screenshots/public-chat.png)
 
-Public chat      |  Home with rooms
-:------------------------:|:-------------------------:
-![Public chat](public/images/screenshots/public-chat.png)  |  ![Home with rooms](public/images/screenshots/home-with-rooms.png)
+Nickname modal
+:-------------------------:
+![Nickname modal](public/images/screenshots/nickname-modal.png)
 
-Create room      |  Create private room
+Create public room      |  Public room chat
 :------------------------:|:-------------------------:
-![Create room](public/images/screenshots/create-room.png)  |  ![Create private room](public/images/screenshots/create-room-private.png)
+![Create public room](public/images/screenshots/create-room.png)  |  ![Public room chat](public/images/screenshots/room-chat-public.png)
 
-Join private room      |  Private room chat
+Create private room      |  Private room chat
 :------------------------:|:-------------------------:
-![Join private room](public/images/screenshots/join-private-room.png)  |  ![Private room chat](public/images/screenshots/room-chat-private.png)
+![Create private room](public/images/screenshots/create-room-private.png)  |  ![Private room chat](public/images/screenshots/room-chat-private.png)
 
-Public room chat      |
+Join private room      |
 :------------------------:|
-![Public room chat](public/images/screenshots/room-chat-public.png)  |
+![Join private room](public/images/screenshots/join-private-room.png)  |
