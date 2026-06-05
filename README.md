@@ -1,59 +1,32 @@
-# Untitled
+## :bookmark_tabs: About This Project
+Chatter is a real-time chat application built with Angular. Users can join a public chat room, create public or private rooms, and exchange messages instantly. Private rooms are protected with a password. The application communicates with the backend via WebSocket using the STOMP protocol.
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.9.
+This repository contains the **frontend section** of the project.
 
-## Development server
+## :hammer_and_wrench: Used Technologies
+* Angular
+* TypeScript
+* HTML, SCSS
+* STOMP.js
+* SockJS
 
-To start a local development server, run:
+## :camera: Screenshots
+Home page      |  Nickname modal
+:------------------------:|:-------------------------:
+![Nickname modal](public/images/screenshots/home.png)  |  ![Home page](public/images/screenshots/nickname-modal.png)
 
-```bash
-ng serve
-```
+Public chat      |  Home with rooms
+:------------------------:|:-------------------------:
+![Public chat](public/images/screenshots/public-chat.png)  |  ![Home with rooms](public/images/screenshots/home-with-rooms.png)
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Create room      |  Create private room
+:------------------------:|:-------------------------:
+![Create room](public/images/screenshots/create-room.png)  |  ![Create private room](public/images/screenshots/create-room-private.png)
 
-## Code scaffolding
+Join private room      |  Private room chat
+:------------------------:|:-------------------------:
+![Join private room](public/images/screenshots/join-private-room.png)  |  ![Private room chat](public/images/screenshots/room-chat-private.png)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Public room chat      |
+:------------------------:|
+![Public room chat](public/images/screenshots/room-chat-public.png)  |
