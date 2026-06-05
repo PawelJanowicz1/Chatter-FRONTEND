@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { RoomService } from '../../../apis/room/room.service';
 import { RoomResponse } from '../../../core/interface/backend-models/room/room-response.interface';
 import { ChatComponent } from '../chat/chat.component';
@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit {
   rooms: RoomResponse[] = [];
   showCreateModal = false;
 
-  constructor(private roomService: RoomService) {}
+  constructor(private roomService: RoomService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadRooms();
@@ -44,6 +44,6 @@ export class HomeComponent implements OnInit {
   }
 
   joinRoom(room: RoomResponse): void {
-    alert(`TODO: join room ${room.name}`);
+    this.router.navigate(['/room', room.id]);
   }
 }

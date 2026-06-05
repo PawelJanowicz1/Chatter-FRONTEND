@@ -1,8 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RoomService } from '../../../apis/room/room.service';
 import { RoomCreateRequest } from '../../../core/interface/backend-models/room/room-create-request.interface';
+import { RoomResponse } from '../../../core/interface/backend-models/room/room-response.interface';
 
 @Component({
   selector: 'app-room-create',
@@ -19,24 +21,40 @@ export class RoomCreateComponent {
   name = '';
   maxCapacity = 10;
   isPrivate = false;
+  password = '';
   loading = false;
 
-  constructor(private roomService: RoomService) {}
+  get isFormValid(): boolean {
+    if (!this.name.trim()) return false;
+    if (this.isPrivate && this.password.trim().length < 3) return false;
+    return true;
+  }
+
+  constructor(
+    private roomService: RoomService,
+    private router: Router
+  ) {}
 
   create(): void {
-    if (!this.name.trim()) return;
+    if (!this.isFormValid) return;
 
     const payload: RoomCreateRequest = {
       name: this.name.trim(),
       maxCapacity: this.maxCapacity,
-      isPrivate: this.isPrivate
+      isPrivate: this.isPrivate,
+      password: this.isPrivate ? this.password.trim() : undefined
     };
 
     this.loading = true;
 
-    this.roomService.createRoom(payload).subscribe(() => {
-      this.loading = false;
-      this.created.emit();
+    this.roomService.createRoom(payload).subscribe({
+      next: (createdRoom: RoomResponse) => {
+        this.loading = false;
+        this.router.navigate(['/room', createdRoom.id]);
+      },
+      error: () => {
+        this.loading = false;
+      }
     });
   }
 }

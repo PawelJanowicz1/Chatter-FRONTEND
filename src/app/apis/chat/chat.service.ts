@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Client, IMessage } from '@stomp/stompjs';
+import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ChatMessage } from '../../core/interface/backend-models/chat/chat-message.interface';
 import SockJS from 'sockjs-client';
@@ -10,6 +10,7 @@ import { environment } from '../../../environments/environment';
 @Injectable({ providedIn: 'root' })
 export class ChatService implements OnDestroy {
   private client: Client | null = null;
+  private roomSubscription: StompSubscription | null = null;
 
   private readonly wsUrl = `${environment.apiBaseUrl}/ws`;
   private readonly publicMessagesUrl = `${environment.apiBaseUrl}/messages/public`;
@@ -20,12 +21,18 @@ export class ChatService implements OnDestroy {
   private _messages$ = new Subject<ChatMessage>();
   readonly messages$ = this._messages$.asObservable();
 
+  private _roomMessages$ = new Subject<ChatMessage>();
+  readonly roomMessages$ = this._roomMessages$.asObservable();
+
   private nick = '';
+  private currentRoomId: string | null = null;
 
   constructor(private httpClient: HttpClient) {}
+
   getPublicMessages(): Observable<ChatMessage[]> {
     return this.httpClient.get<ChatMessage[]>(this.publicMessagesUrl);
   }
+
   connect(nick: string, sendJoinMessage = true) {
     if (this.client?.active) return;
     this.nick = nick.trim();
@@ -52,6 +59,45 @@ export class ChatService implements OnDestroy {
     this.client.activate();
   }
 
+  joinRoom(roomId: string, sendJoinMessage = true) {
+    this.leaveRoom(false);
+    this.currentRoomId = roomId;
+
+    const subscribeToRoom = () => {
+      this.roomSubscription = this.client!.subscribe(
+        `/topic/room/${roomId}`,
+        (frame: IMessage) => {
+          const msg = JSON.parse(frame.body) as ChatMessage;
+          this._roomMessages$.next(msg);
+        }
+      );
+
+      if (sendJoinMessage) {
+        this.sendToRoom({ messageType: MessageType.JOIN, sender: this.nick, content: '' }, roomId);
+      }
+    };
+
+    if (this.client?.connected) {
+      subscribeToRoom();
+    } else {
+      const stateSubscription = this._state$.subscribe(state => {
+        if (state === 'connected') {
+          subscribeToRoom();
+          stateSubscription.unsubscribe();
+        }
+      });
+    }
+  }
+
+  leaveRoom(sendLeaveMessage = true) {
+    if (sendLeaveMessage && this.currentRoomId && this.client?.connected) {
+      this.sendToRoom({ messageType: MessageType.LEAVE, sender: this.nick, content: '' }, this.currentRoomId);
+    }
+    this.roomSubscription?.unsubscribe();
+    this.roomSubscription = null;
+    this.currentRoomId = null;
+  }
+
   sendChat(text: string) {
     const content = text?.trim();
     if (!content || !this.client?.connected) return;
@@ -63,13 +109,18 @@ export class ChatService implements OnDestroy {
     });
   }
 
+  sendRoomChat(text: string, roomId: string) {
+    const content = text?.trim();
+    if (!content || !this.client?.connected) return;
+
+    this.sendToRoom({ messageType: MessageType.CHAT, sender: this.nick, content }, roomId);
+  }
+
   disconnect(sendLeaveMessage = true) {
+    this.leaveRoom(sendLeaveMessage);
+
     if (sendLeaveMessage && this.client?.connected) {
-      this.send({
-        messageType: MessageType.LEAVE,
-        sender: this.nick,
-        content: ''
-      });
+      this.send({ messageType: MessageType.LEAVE, sender: this.nick, content: '' });
     }
 
     this.client?.deactivate();
@@ -84,21 +135,29 @@ export class ChatService implements OnDestroy {
     });
   }
 
+  private sendToRoom(msg: ChatMessage, roomId: string) {
+    this.client?.publish({
+      destination: `/app/room/${roomId}/chat`,
+      body: JSON.stringify(msg)
+    });
+  }
+
   sendSystemMessage(content: string) {
     const trimmedContent = content?.trim();
+    if (!trimmedContent || !this.client?.connected) return;
 
-    if (!trimmedContent || !this.client?.connected) {
-      return;
-    }
+    this.send({ messageType: MessageType.SYSTEM, sender: this.nick, content: trimmedContent });
+  }
 
-    this.send({
-      messageType: MessageType.SYSTEM,
-      sender: this.nick,
-      content: trimmedContent
-    });
+  getNick(): string {
+    return this.nick;
   }
 
   ngOnDestroy() {
     this.disconnect();
+  }
+
+  isConnected(): boolean {
+    return this.client?.connected ?? false;
   }
 }

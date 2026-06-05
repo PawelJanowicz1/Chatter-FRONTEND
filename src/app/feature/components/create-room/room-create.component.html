@@ -33,15 +33,25 @@
       Private room
     </label>
 
+    <div class="field" *ngIf="isPrivate">
+      <label>Room password</label>
+      <input
+        type="password"
+        [(ngModel)]="password"
+        placeholder="Min. 3 characters"
+        autocomplete="new-password"
+      />
+    </div>
+
   </div>
 
   <div class="actions">
     <button class="ghost" (click)="cancel.emit()">Cancel</button>
     <button
       class="create-btn"
-      [class.ready]="name.trim().length > 0"
+      [class.ready]="isFormValid"
       (click)="create()"
-      [disabled]="loading || !name.trim()"
+      [disabled]="loading || !isFormValid"
     >
       {{ loading ? 'Creating…' : 'Create' }}
     </button>

@@ -1,0 +1,80 @@
+<section class="room-root">
+
+  <header class="room-header">
+    <div class="room-title">
+      💬 <strong>{{ room?.name ?? 'Room' }}</strong>
+      <span *ngIf="room?.isPrivate" class="lock-badge">🔒 Private</span>
+    </div>
+    <div class="room-actions">
+      <span class="dot" [class.on]="connected()"></span>
+      <button class="leave-btn" (click)="leaveRoom()">← Leave room</button>
+    </div>
+  </header>
+
+  <div class="room-messages">
+    <div
+      *ngFor="let message of messages"
+      class="line"
+      [class.sys]="message.messageType !== 'CHAT'"
+    >
+      <ng-container [ngSwitch]="message.messageType">
+        <span *ngSwitchCase="'CHAT'"><b>{{ message.sender }}:</b> {{ message.content }}</span>
+        <span *ngSwitchCase="'JOIN'">➡️ {{ message.sender }} joined</span>
+        <span *ngSwitchCase="'LEAVE'">👋 {{ message.sender }} left</span>
+        <span *ngSwitchDefault>[SYSTEM] {{ message.content }}</span>
+      </ng-container>
+      <time>{{ message.sentAt ? (message.sentAt | date:'HH:mm') : '' }}</time>
+    </div>
+  </div>
+
+  <footer class="room-input">
+    <input
+      [(ngModel)]="text"
+      (keydown.enter)="send()"
+      placeholder="Type your message…"
+      [disabled]="showPasswordModal()"
+    />
+    <button
+      (click)="send()"
+      [disabled]="showPasswordModal() || !connected() || !text?.trim()"
+    >
+      <svg viewBox="0 0 24 24" width="22" height="22">
+        <path d="M2 21l21-9L2 3v7l15 2-15 2v7z"></path>
+      </svg>
+    </button>
+  </footer>
+
+</section>
+
+<div class="password-modal-backdrop" *ngIf="showPasswordModal()"></div>
+
+<section class="password-modal" *ngIf="showPasswordModal()">
+  <div class="password-card">
+    <h2>Private room</h2>
+    <p class="modal-subtitle">Enter the password to join <strong>{{ room?.name }}</strong>.</p>
+
+    <div class="field">
+      <label>Password</label>
+      <input
+        type="password"
+        [(ngModel)]="passwordInput"
+        placeholder="Enter password"
+        (keydown.enter)="submitPassword()"
+        autofocus
+      />
+      <span class="error" *ngIf="passwordError">{{ passwordError }}</span>
+    </div>
+
+    <div class="modal-actions">
+      <button class="ghost-btn" (click)="leaveRoom()">Cancel</button>
+      <button
+        class="join-btn"
+        [class.ready]="passwordInput.trim().length >= 3"
+        (click)="submitPassword()"
+        [disabled]="loading() || passwordInput.trim().length < 3"
+      >
+        {{ loading() ? 'Joining…' : 'Join' }}
+      </button>
+    </div>
+  </div>
+</section>
