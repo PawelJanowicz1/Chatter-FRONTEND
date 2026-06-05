@@ -47,6 +47,7 @@ export class RoomChatComponent implements OnInit, OnDestroy {
     }
 
     this.roomId = Number(this.activatedRoute.snapshot.paramMap.get('id'));
+    const justCreated = history.state?.justCreated === true;
 
     this.messageSubscription = this.chatService.roomMessages$.subscribe(message => {
       this.messages.push(message);
@@ -63,10 +64,10 @@ export class RoomChatComponent implements OnInit, OnDestroy {
     this.roomService.getRoomById(this.roomId).subscribe({
       next: room => {
         this.room = room;
-        const justCreated = history.state?.justCreated === true;
-        if (room.isPrivate && !justCreated) {
+        if (room.isPrivate && !justCreated && !this.hasRoomAccess(this.roomId)) {
           this.showPasswordModal.set(true);
         } else {
+          this.saveRoomAccess(this.roomId);
           this.connectToRoom();
         }
       },
@@ -84,6 +85,7 @@ export class RoomChatComponent implements OnInit, OnDestroy {
       next: () => {
         this.loading.set(false);
         this.showPasswordModal.set(false);
+        this.saveRoomAccess(this.roomId);
         this.connectToRoom();
       },
       error: () => {
@@ -110,6 +112,23 @@ export class RoomChatComponent implements OnInit, OnDestroy {
   leaveRoom(): void {
     this.chatService.leaveRoom();
     this.router.navigate(['/']);
+  }
+
+  private saveRoomAccess(roomId: number): void {
+    const accessibleRooms = this.getAccessibleRooms();
+    if (!accessibleRooms.includes(roomId)) {
+      accessibleRooms.push(roomId);
+      localStorage.setItem('chatter_room_access', JSON.stringify(accessibleRooms));
+    }
+  }
+
+  private getAccessibleRooms(): number[] {
+    const stored = localStorage.getItem('chatter_room_access');
+    return stored ? JSON.parse(stored) : [];
+  }
+
+  private hasRoomAccess(roomId: number): boolean {
+    return this.getAccessibleRooms().includes(roomId);
   }
 
   ngOnDestroy(): void {

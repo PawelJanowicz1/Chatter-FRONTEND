@@ -50,11 +50,21 @@ export class RoomCreateComponent {
     this.roomService.createRoom(payload).subscribe({
       next: (createdRoom: RoomResponse) => {
         this.loading = false;
+        this.saveRoomAccess(createdRoom.id);
         this.router.navigate(['/room', createdRoom.id]);
       },
       error: () => {
         this.loading = false;
       }
     });
+  }
+
+  private saveRoomAccess(roomId: number): void {
+    const stored = localStorage.getItem('chatter_room_access');
+    const accessibleRooms: number[] = stored ? JSON.parse(stored) : [];
+    if (!accessibleRooms.includes(roomId)) {
+      accessibleRooms.push(roomId);
+      localStorage.setItem('chatter_room_access', JSON.stringify(accessibleRooms));
+    }
   }
 }
