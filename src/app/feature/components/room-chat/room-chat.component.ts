@@ -88,7 +88,7 @@ export class RoomChatComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.loading.set(false);
-        this.passwordError = 'Nieprawidłowe hasło. Spróbuj ponownie.';
+        this.passwordError = 'Invalid password. Try again.';
       }
     });
   }
